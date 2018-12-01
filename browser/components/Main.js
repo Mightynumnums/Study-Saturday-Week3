@@ -1,62 +1,49 @@
-import React, { Component } from 'react';
-import axios from 'axios';
-
-import StudentList from './StudentList.js';
-import SingleStudent from './SingleStudent.js';
+import React, { Component } from 'react'
+import axios from 'axios'
 
 export default class Main extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
-      students: [],
-      selectedStudent: {},
-    };
-
-    this.selectStudent = this.selectStudent.bind(this);
-  }
-
-  componentDidMount() {
-    this.getStudents();
-  }
-
-  async getStudents() {
-    console.log('fetching');
-    try {
-      const { data } = await axios.get('/student');
-      this.setState({ students: data });
-    } catch (err) {
-      console.error(err);
+      students: []
     }
   }
 
-  selectStudent(student) {
-    return this.setState({
-      selectedStudent: student,
-    });
+  componentDidMount() {
+    this.getStudents()
   }
 
+  async getStudents() {
+    console.log('fetching')
+    try {
+      const { data } = await axios.get('/student')
+      this.setState({ students: data })
+    } catch (err) {
+      console.log(err)
+    }
+  }
   render() {
+    console.log('what is my state?', this.state)
     return (
       <div>
         <h1>Students</h1>
         <table>
-          <thead>
+          <tbody>
             <tr>
               <th>Name</th>
-              <th>Tests</th>
             </tr>
-          </thead>
-          <StudentList
-            students={this.state.students}
-            selectStudent={this.selectStudent}
-          />
+            {
+              this.state.students.map(student => {
+                return (
+                  <tr key={student.id}>
+                    <td>{student.fullName}</td>
+                  </tr>
+                )
+              })
+            }
+          </tbody>
         </table>
-        {this.state.selectedStudent.id ? (
-          <SingleStudent student={this.state.selectedStudent} />
-        ) : null}
       </div>
-    );
+    )
   }
 }
-
-
